@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Mail, Lock, User, Sparkles, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, Sparkles, AlertCircle } from 'lucide-react';
 
 const Login = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -11,7 +11,6 @@ const Login = ({ onLogin }) => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -34,7 +33,7 @@ const Login = ({ onLogin }) => {
         navigate('/');
       } else {
         // Registration flow
-        const response = await fetch('/api/users', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
@@ -168,28 +167,16 @@ const Login = ({ onLogin }) => {
                   <Lock className="h-5 w-5 text-slate-400" />
                 </div>
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type="password"
                   name="password"
                   required
                   minLength={6}
                   value={formData.password}
                   onChange={handleChange}
-                  className="input-field pl-10 pr-10"
+                  className="input-field pl-10"
                   placeholder="Enter your password"
                   autoComplete={isLogin ? "current-password" : "new-password"}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                  disabled={loading}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
               </div>
               {!isLogin && (
                 <p className="mt-1 text-xs text-slate-500">
@@ -222,7 +209,6 @@ const Login = ({ onLogin }) => {
                   setIsLogin(!isLogin);
                   setError('');
                   setFormData({ username: '', email: '', password: '' });
-                  setShowPassword(false);
                 }}
                 className="ml-2 font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                 disabled={loading}
